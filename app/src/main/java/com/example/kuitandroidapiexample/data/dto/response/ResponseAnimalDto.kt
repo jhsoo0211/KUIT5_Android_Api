@@ -1,8 +1,10 @@
 package com.example.kuitandroidapiexample.data.dto.response
 
 import com.example.kuitandroidapiexample.model.AnimalType
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
 @Serializable
 data class ResponseAnimalListDto(
@@ -26,3 +28,8 @@ data class ResponseAnimalDto(
     val address: String
 )
 
+@Serializable
+data class ResponseAnimalDataDto(
+    @SerialName("data")
+    val data: ResponseAnimalDto
+)
