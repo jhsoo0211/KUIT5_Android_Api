@@ -1,4 +1,4 @@
-package com.example.kuitandroidapiexample.data.dto
+package com.example.kuitandroidapiexample.data.dto.response
 
 import com.example.kuitandroidapiexample.model.AnimalType
 import kotlinx.serialization.SerialName
@@ -25,3 +25,4 @@ data class ResponseAnimalDto(
     @SerialName("address")
     val address: String
 )
+

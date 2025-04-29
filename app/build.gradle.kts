@@ -7,8 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-
-val properties = Properties().apply {
+    val properties = Properties().apply {
     load(project.rootProject.file("local.properties").inputStream())
 }
 
@@ -66,8 +65,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-
 
     // navigation
     implementation(libs.androidx.navigation.compose)
