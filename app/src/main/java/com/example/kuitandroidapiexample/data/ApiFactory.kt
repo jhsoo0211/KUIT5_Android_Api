@@ -3,6 +3,7 @@ package com.example.kuitandroidapiexample.data
 import com.example.kuitandroidapiexample.BuildConfig
 import com.example.kuitandroidapiexample.data.service.DetailService
 import com.example.kuitandroidapiexample.data.service.HomeService
+import com.example.kuitandroidapiexample.data.service.RegisterService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -29,4 +30,5 @@ object ApiFactory {
 object ServicePool {
     val homeService = ApiFactory.create<HomeService>()
     val detailService = ApiFactory.create<DetailService>()
+    val registerService = ApiFactory.create<RegisterService>()
 }

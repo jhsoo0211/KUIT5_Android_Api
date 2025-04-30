@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.kuitandroidapiexample.R
 import com.example.kuitandroidapiexample.common.TagChip
+import com.example.kuitandroidapiexample.data.dto.request.RequestAnimalDto
 import com.example.kuitandroidapiexample.detail.viewmodel.DetailViewModel
 import com.example.kuitandroidapiexample.model.AnimalData.Companion.animalDataList
 import com.example.kuitandroidapiexample.model.AnimalType
@@ -125,6 +128,30 @@ fun DetailScreen(
 
 
             }
+            Button(
+                modifier = Modifier
+                    .padding(bottom = 50.dp)
+                    .padding(horizontal = 20.dp)
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colors.red
+                ),
+                shape = RoundedCornerShape(8.dp),
+                onClick = {
+                    navigateToBack()
+                    // TODO : DELETE API
+                    
+                    
+                }
+            ) {
+                Text(
+                    text = "삭제하기",
+                    style = typography.semiBold.copy(fontSize = 18.sp)
+                )
+            }
+        }
+
 //            Text(
 //                text = "신고자 : ${animalData.reporterName}",
 //                style = typography.semiBold.copy(fontSize = 14.sp),
@@ -134,7 +161,7 @@ fun DetailScreen(
 
 
     }
-}
+
 
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
