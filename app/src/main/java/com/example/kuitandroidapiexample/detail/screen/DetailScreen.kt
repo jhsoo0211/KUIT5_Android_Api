@@ -130,7 +130,6 @@ fun DetailScreen(
             }
             Button(
                 modifier = Modifier
-                    .padding(bottom = 50.dp)
                     .padding(horizontal = 20.dp)
                     .fillMaxWidth()
                     .height(50.dp),
@@ -140,9 +139,7 @@ fun DetailScreen(
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
                     navigateToBack()
-                    // TODO : DELETE API
-                    
-                    
+                    viewModel.deleteAnimal(animal!!.id)
                 }
             ) {
                 Text(

@@ -42,4 +42,22 @@ class DetailViewModel : ViewModel() {
                 }
             })
     }
+
+    fun deleteAnimal(id: Int) {
+        detailService.deleteAnimal(id)
+            .enqueue( object: Callback<Unit> {
+                override fun onResponse( call: Call<Unit>, response: Response<Unit>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d("deleteAnimal", "삭제 성공 ${response.code()}")
+                    } else {
+                        Log.e("deleteAnimal", "${response.code()} ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    Log.e("deleteAnimal", "서버 통신 오류: ${t.message}")
+                }
+            })
+    }
 }
