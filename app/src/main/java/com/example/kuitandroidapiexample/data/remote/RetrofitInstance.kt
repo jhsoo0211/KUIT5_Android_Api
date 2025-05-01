@@ -7,7 +7,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 //import retrofit2.converter.kotlinx.serialization.asConverterFactory
-//얘 오류 발생
+
 
 
 

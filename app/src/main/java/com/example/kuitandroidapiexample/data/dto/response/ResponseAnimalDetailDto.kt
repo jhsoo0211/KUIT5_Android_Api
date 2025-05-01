@@ -13,5 +13,5 @@ data class ResponseAnimalDetailDto(
     @SerialName("state")       val state: String,
     @SerialName("breed")       val breed: String,
     @SerialName("address")     val address: String,
-    @SerialName("description") val description: String
+    @SerialName("description") val reporterName: String?= null
 )

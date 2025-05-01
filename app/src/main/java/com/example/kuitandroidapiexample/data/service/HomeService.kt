@@ -3,6 +3,7 @@ package com.example.kuitandroidapiexample.data.service
 import com.example.kuitandroidapiexample.data.dto.ResponseAnimalListDto
 import com.example.kuitandroidapiexample.data.dto.request.RequestAnimalDto
 import com.example.kuitandroidapiexample.data.dto.response.ResponseAnimalDetailDto
+import com.example.kuitandroidapiexample.data.dto.response.ResponseAnimalDetailWrapper
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -18,7 +19,9 @@ interface HomeService {
     /* 단일 동물 조회 */
 
     @GET("animals/{id}")
-    fun getAnimalDetail(@Path("id") id: Int): Call<ResponseAnimalDetailDto>
+    fun getAnimalDetail(
+        @Path("id") id: Int
+    ): Call<ResponseAnimalDetailWrapper>
 
     //동물 저장
     @POST("animals")

@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,13 +42,21 @@ import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
 @Composable
 fun DetailScreen(
     padding: PaddingValues,
-    indexS: Int,
+    id: Int,
     navigateToBack: () -> Unit = {}
 ) {
-    val animalData = animalDataList[index]
     val context = LocalContext.current
     val vm: HomeViewModel = viewModel()
+    val animal = vm.detailState.value
 
+    LaunchedEffect(id) { vm.getAnimalDetail(id) }
+
+    if (animal == null) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -68,7 +78,7 @@ fun DetailScreen(
                     tint = Color.Unspecified
                 )
                 Button(
-                    onClick = { vm.deleteAnimal(animalData.id) { success ->
+                    onClick = { vm.deleteAnimal(animal.id) { success ->
                         if (success) {
                             Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show()
                             navigateToBack()
@@ -92,7 +102,7 @@ fun DetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(420.dp),
-                model = animalData.imageUrl,
+                model = animal.url,
                 contentDescription = "동물 사진"
             )
         }
@@ -105,14 +115,14 @@ fun DetailScreen(
                 .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
         ) {
             Text(
-                text = animalData.animalName,
+                text = animal.name,
                 style = typography.semiBold.copy(fontSize = 24.sp),
                 modifier = Modifier.padding(start = 40.dp, top = 42.dp, bottom = 20.dp)
             )
 
             TagChip(
                 modifier = Modifier.padding(start = 40.dp),
-                animalType = animalData.type
+                animalType = animal.state
             )
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -135,7 +145,7 @@ fun DetailScreen(
                     style = typography.semiBold.copy(fontSize = 14.sp, color = colors.orange),
                 )
                 Text(
-                    text = animalData.address,
+                    text = animal.address,
                     style = typography.semiBold.copy(fontSize = 14.sp),
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -143,7 +153,7 @@ fun DetailScreen(
 
             }
             Text(
-                text = "신고자 : ${animalData.reporterName}",
+                text = "신고자 : ${animal.reporter ?: "정보 없음"}",
                 style = typography.semiBold.copy(fontSize = 14.sp),
                 modifier = Modifier.padding(start = 40.dp, top = 21.dp)
             )

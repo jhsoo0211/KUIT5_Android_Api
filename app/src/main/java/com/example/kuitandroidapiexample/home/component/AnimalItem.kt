@@ -1,5 +1,6 @@
 package com.example.kuitandroidapiexample.home.component
 
+import android.provider.Contacts.Intents.UI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,13 +25,14 @@ import com.example.kuitandroidapiexample.common.TagChip
 import com.example.kuitandroidapiexample.data.dto.ResponseAnimalDto
 import com.example.kuitandroidapiexample.model.AnimalData
 import com.example.kuitandroidapiexample.model.AnimalType
+import com.example.kuitandroidapiexample.model.UiAnimal
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.colors
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
 
 @Composable
 fun AnimalItem(
     modifier: Modifier = Modifier,
-    animalData: ResponseAnimalDto,
+    animalData: UiAnimal,
     navigateToDetail: () -> Unit = {}
 ) {
     Row(
@@ -84,13 +86,15 @@ fun AnimalItem(
 @Composable
 private fun AnimalItemPreview() {
     AnimalItem(
-        animalData = ResponseAnimalDto(
+        animalData = UiAnimal(
             id = 6,
-            url = "https://cdn.pixabay.com/photo/2018/05/26/18/06/dog-3431913_640.jpg",
             name = "점박이",
+            url = "https://cdn.pixabay.com/photo/2018/05/26/18/06/dog-3431913_640.jpg",
             state = AnimalType.PROTECT,
-            breed = " 포메라니안",
-            address = "서울특별시 광진구 구의동"
-        )
+            breed = "포메라니안",
+            address = "서울특별시 광진구 구의동",
+            reporter = null
+        ),
+        navigateToDetail = {}
     )
 }
