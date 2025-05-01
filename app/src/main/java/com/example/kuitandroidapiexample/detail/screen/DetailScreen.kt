@@ -1,5 +1,6 @@
 package com.example.kuitandroidapiexample.detail.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,24 +22,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.kuitandroidapiexample.R
 import com.example.kuitandroidapiexample.common.TagChip
+import com.example.kuitandroidapiexample.home.viewmodel.HomeViewModel
 import com.example.kuitandroidapiexample.model.AnimalData.Companion.animalDataList
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.colors
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
+//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 @Composable
 fun DetailScreen(
     padding: PaddingValues,
-    index: Int,
+    indexS: Int,
     navigateToBack: () -> Unit = {}
 ) {
     val animalData = animalDataList[index]
+    val context = LocalContext.current
+    val vm: HomeViewModel = viewModel()
+
 
     Box(
         modifier = Modifier
@@ -57,6 +67,26 @@ fun DetailScreen(
                     contentDescription = "뒤로 가기",
                     tint = Color.Unspecified
                 )
+                Button(
+                    onClick = { vm.deleteAnimal(animalData.id) { success ->
+                        if (success) {
+                            Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show()
+                            navigateToBack()
+                        } else {
+                            Toast.makeText(context, "삭제 실패", Toast.LENGTH_SHORT).show()
+                        }
+                    } },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.DarkGray, // 진한 빨강 (Material Red 700)
+                        contentColor = Color.White          // 글씨색 흰색
+                    ),
+                            modifier = Modifier
+                            . align (Alignment.CenterEnd)
+                        .padding(end = 20.dp)
+                ) {
+                    Text("삭제")
+                }
+
             }
             AsyncImage(
                 modifier = Modifier

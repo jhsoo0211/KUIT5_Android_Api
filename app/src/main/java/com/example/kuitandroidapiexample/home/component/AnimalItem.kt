@@ -89,7 +89,7 @@ private fun AnimalItemPreview() {
             url = "https://cdn.pixabay.com/photo/2018/05/26/18/06/dog-3431913_640.jpg",
             name = "점박이",
             state = AnimalType.PROTECT,
-            breed = " ",
+            breed = " 포메라니안",
             address = "서울특별시 광진구 구의동"
         )
     )
