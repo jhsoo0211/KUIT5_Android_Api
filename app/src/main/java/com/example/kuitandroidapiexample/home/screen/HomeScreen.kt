@@ -19,24 +19,48 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kuitandroidapiexample.home.component.AnimalItem
+import com.example.kuitandroidapiexample.home.viewmodel.HomeViewModel
 import com.example.kuitandroidapiexample.model.AnimalData.Companion.animalDataList
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.colors
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
+import androidx.compose.foundation.lazy.items
+
 
 @Composable
 fun HomeScreen(
     padding: PaddingValues,
     navigateToRegister: () -> Unit = {},
     navigateToDetail: (Int) -> Unit = {},
+    viewModel: HomeViewModel = viewModel()
 ) {
     val lazyState = rememberLazyListState()
+    val response by viewModel.animalListState
+    val animals = response?.data.orEmpty()
+
+    LaunchedEffect(Unit) {
+        viewModel.getTotalAnimalList()
+    }
+
+    val isAnimalSaved = viewModel.isAnimalSaved.value
+    if (isAnimalSaved) {
+    }
+
+    val isAnimalDeleted = viewModel.isAnimalDeleted.value
+    if (isAnimalDeleted) {
+        viewModel.getTotalAnimalList()
+    }
+
 
     Box(
         modifier = Modifier
@@ -64,12 +88,15 @@ fun HomeScreen(
                 contentPadding = PaddingValues(top = 20.dp, start = 20.dp, end = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(animalDataList.size) { index ->
+
+                items(animals, key = { it.id }) { animal ->
                     AnimalItem(
-                        animalData = animalDataList[index],
-                        navigateToDetail = { navigateToDetail(index) }
+                        animalData = animal,
+                        navigateToDetail = { navigateToDetail(animal.id) }
                     )
                 }
+
+
             }
         }
 

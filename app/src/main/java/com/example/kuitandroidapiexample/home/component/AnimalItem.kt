@@ -1,5 +1,6 @@
 package com.example.kuitandroidapiexample.home.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.kuitandroidapiexample.R
 import com.example.kuitandroidapiexample.common.TagChip
-import com.example.kuitandroidapiexample.model.AnimalData
+import com.example.kuitandroidapiexample.data.dto.response.ResponseAnimalDto
 import com.example.kuitandroidapiexample.model.AnimalType
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.colors
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
@@ -28,9 +29,14 @@ import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
 @Composable
 fun AnimalItem(
     modifier: Modifier = Modifier,
-    animalData: AnimalData,
+    animalData: ResponseAnimalDto,
     navigateToDetail: () -> Unit = {}
 ) {
+    val animalType = try {
+        AnimalType.valueOf(animalData.state) // String을 AnimalType으로 변환
+    } catch (e: IllegalArgumentException) {
+        AnimalType.PROTECT // 예외 처리: 기본값 설정
+    }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -38,8 +44,10 @@ fun AnimalItem(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         AsyncImage(
-            modifier = Modifier.size(130.dp),
-            model = animalData.imageUrl,
+            modifier = Modifier
+                .size(130.dp)
+                .background(colors.gray200),
+            model = animalData.url,
             contentDescription = "동물 사진입니다."
         )
         Column(
@@ -47,12 +55,12 @@ fun AnimalItem(
         ) {
             Text(
                 modifier = Modifier.padding(start = 1.dp),
-                text = animalData.animalName,
+                text = animalData.name,
                 style = typography.semiBold.copy(fontSize = 18.sp)
             )
             TagChip(
                 modifier = Modifier.padding(top = 10.dp, start = 1.dp),
-                animalType = animalData.type
+                animalType = animalType
             )
             Row(
                 modifier = Modifier.padding(top = 31.dp),
@@ -76,15 +84,17 @@ fun AnimalItem(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun AnimalItemPreview() {
-    AnimalItem(
-        animalData = AnimalData(
-            imageUrl = "https://cdn.pixabay.com/photo/2018/05/26/18/06/dog-3431913_640.jpg",
-            animalName = "점박이",
-            type = AnimalType.PROTECT,
-            address = "서울특별시 광진구 구의동"
-        )
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun AnimalItemPreview() {
+//    AnimalItem(
+//        animalData =ResponseAnimalDto(
+//            id =6,
+//            url = "https://cdn.pixabay.com/photo/2018/05/26/18/06/dog-3431913_640.jpg",
+//            name = "점박이",
+//            state = AnimalType.PROTECT,
+//            breed ="",
+//            address = "서울특별시 광진구 구의동"
+//        )
+//    )
+//}

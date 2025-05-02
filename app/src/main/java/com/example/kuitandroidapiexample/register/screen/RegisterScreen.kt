@@ -21,6 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kuitandroidapiexample.data.dto.response.ResponseAnimalDto
+import com.example.kuitandroidapiexample.home.viewmodel.HomeViewModel
 import com.example.kuitandroidapiexample.model.AnimalType
 import com.example.kuitandroidapiexample.register.componet.FindUTextField
 import com.example.kuitandroidapiexample.register.componet.TypeSelectContent
@@ -30,7 +33,9 @@ import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
 @Composable
 fun RegisterScreen(
     padding: PaddingValues,
-    navigateToBack: () -> Unit = {}
+    navigateToBack: () -> Unit = {},
+    viewModel: HomeViewModel = viewModel()
+
 ) {
     var url by remember { mutableStateOf("") }
     var animalName by remember { mutableStateOf("") }
@@ -104,7 +109,15 @@ fun RegisterScreen(
             shape = RoundedCornerShape(8.dp),
             onClick = {
                 navigateToBack()
-                // TODO : POST API
+                val animal = ResponseAnimalDto(
+                    id = 0,
+                    url = url,
+                    name = animalName,
+                    state = animalType.toString(),
+                    breed = "미제공",
+                    address = address
+                )
+                viewModel.saveAnimal(animal)
             }
         ) {
             Text(
