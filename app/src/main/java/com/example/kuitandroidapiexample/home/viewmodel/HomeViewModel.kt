@@ -1,6 +1,5 @@
 package com.example.kuitandroidapiexample.home.viewmodel
 
-import ServicePool
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +32,6 @@ class HomeViewModel : ViewModel() {
 
                 override fun onFailure(call: Call<ResponseAnimalListDto>, t: Throwable) {
                     Log.e("getTotalAnimalList", "서버 통신 오류: ${t.message}")
-
                 }
             })
     }
