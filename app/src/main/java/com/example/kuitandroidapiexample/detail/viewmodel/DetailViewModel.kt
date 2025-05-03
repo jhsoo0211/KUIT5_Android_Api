@@ -34,7 +34,25 @@ class DetailViewModel : ViewModel() {
                     Log.e("getAnimalDetail", "서버 통신 오류: ${t.message}")
                 }
             })
-
     }
 
+    fun deleteAnimal(id: Int) {
+        detailService.deleteAnimal(id)
+            .enqueue(object : Callback<ResponseAnimalDetailDto> {
+                override fun onResponse(
+                    call: Call<ResponseAnimalDetailDto>,
+                    response: Response<ResponseAnimalDetailDto>
+                ) {
+                    if (response.isSuccessful) {
+                        _animalDetailState.value = response.body()
+                    } else {
+                        Log.e("getAnimalDetail", "${response.code()} ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseAnimalDetailDto>, t: Throwable) {
+                    Log.e("getAnimalDetail", "서버 통신 오류: ${t.message}")
+                }
+            })
+    }
 }

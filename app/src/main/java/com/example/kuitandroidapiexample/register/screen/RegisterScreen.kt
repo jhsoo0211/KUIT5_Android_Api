@@ -108,7 +108,6 @@ fun RegisterScreen(
             shape = RoundedCornerShape(8.dp),
             onClick = {
                 navigateToBack()
-                // TODO : POST API
                 viewModel.registerAnimal(
                     postData = RequestAnimalDto(
                         id = 20,
