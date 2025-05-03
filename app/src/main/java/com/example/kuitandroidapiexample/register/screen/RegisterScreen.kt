@@ -21,22 +21,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kuitandroidapiexample.data.dto.response.ResponseAnimalDto
+import com.example.kuitandroidapiexample.home.viewmodel.HomeViewModel
 import com.example.kuitandroidapiexample.model.AnimalType
-import com.example.kuitandroidapiexample.register.componet.FindUTextField
-import com.example.kuitandroidapiexample.register.componet.TypeSelectContent
+import com.example.kuitandroidapiexample.register.component.FindUTextField
+import com.example.kuitandroidapiexample.register.component.TypeSelectContent
+import com.example.kuitandroidapiexample.register.viewmodel.RegisterViewModel
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.colors
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
+import kotlinx.serialization.SerialName
 
 @Composable
 fun RegisterScreen(
     padding: PaddingValues,
-    navigateToBack: () -> Unit = {}
+    navigateToBack: () -> Unit = {},
+    registerViewModel: RegisterViewModel = viewModel(),
+    homeViewModel: HomeViewModel = viewModel()
 ) {
+    val response by registerViewModel.animalRegistState
+
+
     var url by remember { mutableStateOf("") }
     var animalName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var reporterName by remember { mutableStateOf("") }
     var animalType by remember { mutableStateOf(AnimalType.PROTECT) }
+
+    val animaldata = ResponseAnimalDto( //아마 이 Dto에는 신고자 변수가 없어서 등록 안될 듯
+        id=0,
+        url=url,
+        name=animalName,
+        state=animalType,
+        breed = reporterName,
+        address = address
+    )
 
     Box(
         modifier = Modifier
@@ -103,8 +122,14 @@ fun RegisterScreen(
             ),
             shape = RoundedCornerShape(8.dp),
             onClick = {
+                registerViewModel.registerNewAnimal(
+                    url = animaldata.url,
+                    reporterName = animaldata.name,
+                    address = animaldata.address,
+                    animalName = animaldata.breed,
+                    state = animalType,
+                )
                 navigateToBack()
-                // TODO : POST API
             }
         ) {
             Text(
@@ -113,7 +138,6 @@ fun RegisterScreen(
             )
         }
     }
-
 }
 
 @Preview(showBackground = true)

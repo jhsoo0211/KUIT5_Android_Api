@@ -1,19 +1,27 @@
 package com.example.kuitandroidapiexample.detail.screen
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,20 +31,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.kuitandroidapiexample.R
 import com.example.kuitandroidapiexample.common.TagChip
+import com.example.kuitandroidapiexample.detail.viewmodel.DeleteViewModel
+import com.example.kuitandroidapiexample.detail.viewmodel.DetailViewModel
 import com.example.kuitandroidapiexample.model.AnimalData.Companion.animalDataList
+import com.example.kuitandroidapiexample.model.AnimalType
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.colors
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
 
 @Composable
 fun DetailScreen(
     padding: PaddingValues,
-    index: Int,
-    navigateToBack: () -> Unit = {}
+    animalId: Int,
+    navigateToBack: () -> Unit = {},
+    detailViewModel : DetailViewModel = viewModel(),
+    deleteViewModel : DeleteViewModel = viewModel()
 ) {
-    val animalData = animalDataList[index]
+    val detailResult by detailViewModel.animalsingleState
+    val animal = detailResult?.data
+
+    LaunchedEffect(Unit) {
+        detailViewModel.getSingleAnimalDetail(animalId = animalId)
+    }
 
     Box(
         modifier = Modifier
@@ -62,7 +81,7 @@ fun DetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(420.dp),
-                model = animalData.imageUrl,
+                model = animal?.url,
                 contentDescription = "동물 사진"
             )
         }
@@ -75,14 +94,14 @@ fun DetailScreen(
                 .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
         ) {
             Text(
-                text = animalData.animalName,
+                text = animal?.name ?: "강아지 기본이름",
                 style = typography.semiBold.copy(fontSize = 24.sp),
                 modifier = Modifier.padding(start = 40.dp, top = 42.dp, bottom = 20.dp)
             )
 
             TagChip(
                 modifier = Modifier.padding(start = 40.dp),
-                animalType = animalData.type
+                animalType = animal?.state ?: AnimalType.PROTECT
             )
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -105,21 +124,42 @@ fun DetailScreen(
                     style = typography.semiBold.copy(fontSize = 14.sp, color = colors.orange),
                 )
                 Text(
-                    text = animalData.address,
+                    text = animal?.address ?: "주소 정보 없음",
                     style = typography.semiBold.copy(fontSize = 14.sp),
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
 
 
             }
-            Text(
-                text = "신고자 : ${animalData.reporterName}",
-                style = typography.semiBold.copy(fontSize = 14.sp),
-                modifier = Modifier.padding(start = 40.dp, top = 21.dp)
-            )
+            Row(
+                modifier = Modifier.padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "신고자 : ${animal?.name}",
+                    style = typography.semiBold.copy(fontSize = 14.sp),
+                )
+                Spacer(modifier = Modifier.size(5.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colors.red
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    onClick = {
+                        deleteViewModel.deleteAnimal(animalId = animalId)
+                        navigateToBack()
+                    }
+                ) {
+                    Text(
+                        text = "삭제하기",
+                        style = typography.semiBold.copy(fontSize = 18.sp)
+                    )
+                }
+            }
         }
-
-
     }
 }
 
@@ -127,5 +167,7 @@ fun DetailScreen(
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 private fun DetailScreenPreview() {
-    DetailScreen(PaddingValues(), 0)
+    DetailScreen(
+        PaddingValues(), 1
+    )
 }

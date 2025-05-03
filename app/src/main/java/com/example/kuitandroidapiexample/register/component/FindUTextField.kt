@@ -1,4 +1,4 @@
-package com.example.kuitandroidapiexample.register.componet
+package com.example.kuitandroidapiexample.register.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
