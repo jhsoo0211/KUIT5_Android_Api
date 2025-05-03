@@ -1,8 +1,14 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.0.21"
+    alias(libs.plugins.kotlin.serialization)
+}
+
+val properties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -17,6 +23,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BASE_URL", properties["base.url"].toString())
     }
 
     buildTypes {
@@ -37,7 +44,12 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+}
+
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
 }
 
 dependencies {
@@ -50,6 +62,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,4 +80,12 @@ dependencies {
     // coil
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
+
+    // Network
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlin.serialization.converter)
+    implementation(libs.kotlinx.serialization.json)
 }
