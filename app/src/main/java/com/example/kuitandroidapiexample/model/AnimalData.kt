@@ -1,5 +1,7 @@
 package com.example.kuitandroidapiexample.model
 
+import com.example.kuitandroidapiexample.data.dto.ResponseAnimalDto
+
 data class AnimalData(
     val imageUrl: String,
     val animalName: String,
@@ -42,4 +44,16 @@ data class AnimalData(
             )
         )
     }
+}
+
+
+fun AnimalData.toResponseDto(): ResponseAnimalDto {
+    return ResponseAnimalDto(
+        id = 0, // 샘플용 더미라서 0 넣는 거고 실제론 필요시 id 필드 추가
+        url = this.imageUrl,
+        name = this.animalName,
+        state = this.type,
+        breed = "", // 필요에 따라 추가
+        address = this.address
+    )
 }

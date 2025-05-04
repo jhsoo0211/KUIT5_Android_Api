@@ -41,8 +41,9 @@ fun MainNavHost(
 
             DetailScreen(
                 padding = padding,
-                index = args.index,
-                navigateToBack = { navController.navigateUp() }
+                navigateToBack = { navController.navigateUp() },
+                animalId = args.index
+
             )
         }
     }

@@ -2,9 +2,11 @@ package com.example.kuitandroidapiexample.detail.screen
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,32 +27,63 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.kuitandroidapiexample.R
 import com.example.kuitandroidapiexample.common.TagChip
-import com.example.kuitandroidapiexample.model.AnimalData.Companion.animalDataList
+import com.example.kuitandroidapiexample.data.dto.ResponseAnimalDto
+import com.example.kuitandroidapiexample.detail.delete.DeleteButton
+import com.example.kuitandroidapiexample.home.viewmodel.HomeViewModel
+import com.example.kuitandroidapiexample.model.AnimalType
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.colors
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
+
 
 @Composable
 fun DetailScreen(
     padding: PaddingValues,
-    index: Int,
-    navigateToBack: () -> Unit = {}
+    animalId: Int,
+    navigateToBack: () -> Unit = {},
+    viewModel: HomeViewModel = viewModel()
 ) {
-    val animalData = animalDataList[index]
 
+    // 1) 화면 진입 또는 animalId 변경될 때마다 상세 API 호출
+    LaunchedEffect(animalId) {
+        viewModel.getAnimalById(animalId)
+    }
+
+    // 2) ViewModel 에서 내려준 상세 데이터 구독
+    val detailResponse by viewModel.animalDetailState
+    val animal = detailResponse
+        ?: return  // 아직 데이터가 없으면 화면 그리지 않고 리턴
+
+    AnimalDetailContent(
+        padding = padding,
+        animal = animal,
+        navigateToBack = navigateToBack,
+        viewModel = viewModel
+    )
+}
+
+@Composable
+fun AnimalDetailContent(
+    padding: PaddingValues,
+    animal: ResponseAnimalDto,
+    navigateToBack: () -> Unit = {},
+    viewModel: HomeViewModel = viewModel()
+) {
     Box(
         modifier = Modifier
             .padding(padding)
             .fillMaxSize()
     ) {
         Column {
-            Box(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-            ) {
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
                 Icon(
                     modifier = Modifier
                         .padding(20.dp)
@@ -57,12 +92,23 @@ fun DetailScreen(
                     contentDescription = "뒤로 가기",
                     tint = Color.Unspecified
                 )
+
+                DeleteButton(
+                    title = "삭제",
+                    modifier = Modifier.padding(end = 20.dp),
+                            onClick = {
+                        viewModel.deleteAnimal(animal.id)
+                        navigateToBack()
+                    }
+
+                )
             }
+
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(420.dp),
-                model = animalData.imageUrl,
+                model = animal.url,
                 contentDescription = "동물 사진"
             )
         }
@@ -75,14 +121,14 @@ fun DetailScreen(
                 .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
         ) {
             Text(
-                text = animalData.animalName,
+                text = animal.name,
                 style = typography.semiBold.copy(fontSize = 24.sp),
                 modifier = Modifier.padding(start = 40.dp, top = 42.dp, bottom = 20.dp)
             )
 
             TagChip(
                 modifier = Modifier.padding(start = 40.dp),
-                animalType = animalData.type
+                animalType = animal.state
             )
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -105,7 +151,7 @@ fun DetailScreen(
                     style = typography.semiBold.copy(fontSize = 14.sp, color = colors.orange),
                 )
                 Text(
-                    text = animalData.address,
+                    text = animal.address,
                     style = typography.semiBold.copy(fontSize = 14.sp),
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -113,7 +159,7 @@ fun DetailScreen(
 
             }
             Text(
-                text = "신고자 : ${animalData.reporterName}",
+                text = "신고자 : ${animal.name}",
                 style = typography.semiBold.copy(fontSize = 14.sp),
                 modifier = Modifier.padding(start = 40.dp, top = 21.dp)
             )
@@ -127,5 +173,17 @@ fun DetailScreen(
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 private fun DetailScreenPreview() {
-    DetailScreen(PaddingValues(), 0)
+    val fakeAnimal = ResponseAnimalDto(
+        id = 24,
+        url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQJjHY4DexDJWPHtjECnXAgo2DR2PeksT21g&s",
+        name = "귀여미",
+        state = AnimalType.PROTECT,
+        breed = "포메라니안",
+        address = "건대 신공학관"
+    )
+
+    AnimalDetailContent(
+        padding = PaddingValues(),
+        animal = fakeAnimal
+    )
 }
