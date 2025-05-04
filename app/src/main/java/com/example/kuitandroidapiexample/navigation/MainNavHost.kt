@@ -42,7 +42,8 @@ fun MainNavHost(
             DetailScreen(
                 padding = padding,
                 index = args.index,
-                navigateToBack = { navController.navigateUp() }
+                navigateToBack = { navController.navigateUp() },
+                navigateToHome = { navController.navigate(Route.Home) }
             )
         }
     }
