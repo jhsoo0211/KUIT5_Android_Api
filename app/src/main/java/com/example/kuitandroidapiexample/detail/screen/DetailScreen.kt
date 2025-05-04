@@ -11,32 +11,61 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.kuitandroidapiexample.R
 import com.example.kuitandroidapiexample.common.TagChip
+import com.example.kuitandroidapiexample.data.dto.request.RequestRegisterAnimalDto
+import com.example.kuitandroidapiexample.home.viewmodel.HomeViewModel
+import com.example.kuitandroidapiexample.model.AnimalData
 import com.example.kuitandroidapiexample.model.AnimalData.Companion.animalDataList
+import com.example.kuitandroidapiexample.model.AnimalType
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.colors
 import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
+import kotlin.collections.orEmpty
 
 @Composable
 fun DetailScreen(
     padding: PaddingValues,
     index: Int,
-    navigateToBack: () -> Unit = {}
+    navigateToBack: () -> Unit = {},
+    viewModel: HomeViewModel = viewModel()
 ) {
-    val animalData = animalDataList[index]
+    val animal = viewModel.animalDetailState.value
+
+    // 최초 진입 시 API 호출
+    LaunchedEffect(index) {
+        viewModel.getAnimalDetail(index)
+    }
+
+    // 데이터가 아직 없으면 로딩 표시
+    if (animal == null) {
+        return Text("동물 정보를 불러오는 중입니다...")
+    }
+
+//    val response by viewModel.animalListState
+//    val animals = response?.data.orEmpty()
+//
+//    LaunchedEffect(Unit) {
+//        viewModel.getTotalAnimalList()
+//    }
 
     Box(
         modifier = Modifier
@@ -61,8 +90,8 @@ fun DetailScreen(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(420.dp),
-                model = animalData.imageUrl,
+                    .height(380.dp),
+                model = animal.url,
                 contentDescription = "동물 사진"
             )
         }
@@ -70,19 +99,20 @@ fun DetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(bottom = 50.dp)
                 .height(304.dp)
                 .align(Alignment.BottomCenter)
                 .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
         ) {
             Text(
-                text = animalData.animalName,
+                text = animal.name,
                 style = typography.semiBold.copy(fontSize = 24.sp),
                 modifier = Modifier.padding(start = 40.dp, top = 42.dp, bottom = 20.dp)
             )
 
             TagChip(
                 modifier = Modifier.padding(start = 40.dp),
-                animalType = animalData.type
+                animalType = animal.state
             )
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -105,7 +135,7 @@ fun DetailScreen(
                     style = typography.semiBold.copy(fontSize = 14.sp, color = colors.orange),
                 )
                 Text(
-                    text = animalData.address,
+                    text = animal.address,
                     style = typography.semiBold.copy(fontSize = 14.sp),
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -113,12 +143,45 @@ fun DetailScreen(
 
             }
             Text(
-                text = "신고자 : ${animalData.reporterName}",
+                text = "신고자 : ${animal.name}",
                 style = typography.semiBold.copy(fontSize = 14.sp),
                 modifier = Modifier.padding(start = 40.dp, top = 21.dp)
             )
-        }
+            Spacer(modifier = Modifier.height(8.dp))
 
+        }
+        Button(
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth()
+                .height(50.dp)
+                .align(Alignment.BottomCenter),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colors.red
+            ),
+            shape = RoundedCornerShape(8.dp),
+            onClick = {
+                navigateToBack()
+                viewModel.deleteAnimal(index)
+//                    val request = RequestRegisterAnimalDto(
+//                        url = url,
+//                        name = animalName,
+//                        state = animalType.name,
+//                        breed = "말티즈",
+//                        address = address
+//                    )
+//
+//                    viewModel.registerAnimal(
+//                        dto = request
+//                    )
+            }
+        ) {
+            Text(
+                text = "삭제하기",
+                style = typography.semiBold.copy(fontSize = 18.sp)
+            )
+        }
 
     }
 }
