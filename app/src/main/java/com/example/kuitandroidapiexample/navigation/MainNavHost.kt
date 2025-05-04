@@ -41,7 +41,7 @@ fun MainNavHost(
 
             DetailScreen(
                 padding = padding,
-                index = args.index,
+                id = args.index,
                 navigateToBack = { navController.navigateUp() }
             )
         }

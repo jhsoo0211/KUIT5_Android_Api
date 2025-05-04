@@ -1,5 +1,10 @@
 package com.example.kuitandroidapiexample.register.screen
 
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kuitandroidapiexample.home.viewmodel.HomeViewModel
+import com.example.kuitandroidapiexample.data.dto.request.RequestAnimalDto
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,6 +42,9 @@ fun RegisterScreen(
     var address by remember { mutableStateOf("") }
     var reporterName by remember { mutableStateOf("") }
     var animalType by remember { mutableStateOf(AnimalType.PROTECT) }
+
+    val context = LocalContext.current       // 🟩 Toast 띄우기용
+    val vm: HomeViewModel = viewModel()     // 🟩 POST 요청 보낼 ViewModel
 
     Box(
         modifier = Modifier
@@ -103,8 +111,24 @@ fun RegisterScreen(
             ),
             shape = RoundedCornerShape(8.dp),
             onClick = {
-                navigateToBack()
-                // TODO : POST API
+                //navigateToBack()
+                val req = RequestAnimalDto(
+                    name = animalName,
+                    url = url,
+                    state = animalType.name,    // enum → string
+                    breed = reporterName,       // reporterName = 품종
+                    address = address
+                )
+
+                // 🟩 ② ViewModel 호출 + 결과 처리
+                vm.registerAnimal(req) { success ->
+                    if (success) {
+                        Toast.makeText(context, "등록 성공", Toast.LENGTH_SHORT).show()
+                        navigateToBack()       // 홈으로 복귀
+                    } else {
+                        Toast.makeText(context, "등록 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         ) {
             Text(
