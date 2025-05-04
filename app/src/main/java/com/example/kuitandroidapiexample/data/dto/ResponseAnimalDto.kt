@@ -20,7 +20,7 @@ data class ResponseAnimalDto(
     @SerialName("url")
     val url: String,
     @SerialName("state")
-    val state: String, //서버는 문자열
+    val state: String, //서버는 문자열.
     @SerialName("breed")
     val breed: String,
     @SerialName("address")
