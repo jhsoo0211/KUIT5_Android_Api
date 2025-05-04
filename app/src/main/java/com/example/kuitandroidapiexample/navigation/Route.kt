@@ -11,4 +11,5 @@ sealed interface Route {
 
     @Serializable
     data class Detail(val index: Int) : Route
+
 }
