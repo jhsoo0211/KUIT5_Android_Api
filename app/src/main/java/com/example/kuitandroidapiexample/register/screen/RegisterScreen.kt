@@ -21,6 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kuitandroidapiexample.data.dto.request.RequestAnimalDto
+import com.example.kuitandroidapiexample.detail.viewmodel.DogPostViewModel
 import com.example.kuitandroidapiexample.model.AnimalType
 import com.example.kuitandroidapiexample.register.componet.FindUTextField
 import com.example.kuitandroidapiexample.register.componet.TypeSelectContent
@@ -30,7 +33,8 @@ import com.example.kuitandroidapiexample.ui.theme.FindUTheme.typography
 @Composable
 fun RegisterScreen(
     padding: PaddingValues,
-    navigateToBack: () -> Unit = {}
+    navigateToBack: () -> Unit = {},
+    viewModel: DogPostViewModel = viewModel()
 ) {
     var url by remember { mutableStateOf("") }
     var animalName by remember { mutableStateOf("") }
@@ -105,6 +109,18 @@ fun RegisterScreen(
             onClick = {
                 navigateToBack()
                 // TODO : POST API
+                val dto = RequestAnimalDto(
+                    id = 1,
+                    name = animalName,
+                    url = url,
+                    state = animalType,
+                    breed = "",
+                    address = address,
+                    reporterName = reporterName
+                )
+
+                viewModel.postAnimal(dto)
+                navigateToBack()
             }
         ) {
             Text(
@@ -114,10 +130,4 @@ fun RegisterScreen(
         }
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(padding = PaddingValues())
 }
