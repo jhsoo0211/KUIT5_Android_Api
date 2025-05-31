@@ -1,7 +1,9 @@
 package com.example.kuitandroidapiexample.model
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class AnimalType(
     val type: String
 ) {

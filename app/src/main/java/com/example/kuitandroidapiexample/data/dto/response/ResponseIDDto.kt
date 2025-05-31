@@ -6,12 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseAnimalDetailDto(
-    @SerialName("data")
-    val data: ResponseDto
-)
-
-@Serializable
-data class ResponseDto(
     @SerialName("id")
     val id: Int,
     @SerialName("name")

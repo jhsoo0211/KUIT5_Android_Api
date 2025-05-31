@@ -10,5 +10,5 @@ import retrofit2.http.Path
 
 interface DeleteService{
     @DELETE("animals/{id}")
-    fun deleteAnimal(@Path("id") id: Int): Call<ResponseAnimalDeleteDto>
+    suspend fun deleteAnimal(@Path("id") id: Int): ResponseAnimalDeleteDto
 }

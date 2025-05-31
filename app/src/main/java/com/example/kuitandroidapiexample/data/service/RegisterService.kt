@@ -9,7 +9,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface RegisterService{
+interface RegisterService {
     @POST("animals")
-    fun registerAnimal(@Body request: RequestAnimalRegisterDto): Call<ResponseAnimalRegisterDto>
+    suspend fun registerAnimal(@Body request: RequestAnimalRegisterDto): ResponseAnimalRegisterDto
 }

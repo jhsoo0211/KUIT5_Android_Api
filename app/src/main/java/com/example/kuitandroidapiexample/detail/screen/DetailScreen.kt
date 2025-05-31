@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,12 +53,19 @@ fun DetailScreen(
     navigateToBack: () -> Unit = {},
     viewModel: DetailViewModel = viewModel()
 ) {
-
     LaunchedEffect(id) {
         viewModel.getAnimal(id)
     }
-    val response by viewModel.animalState
-    val animal = viewModel.animalState.value?.data ?: return
+    val response = viewModel.animalState.value
+
+    if (response == null) {
+        return
+    }
+
+    val animal = response.data
+
+
+
     val deleteViewModel: DeleteViewModel = viewModel()
 
     Box(
