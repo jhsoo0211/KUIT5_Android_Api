@@ -33,7 +33,6 @@ fun MainNavHost(
             RegisterScreen(
                 padding = padding,
                 navigateToBack = { navController.navigateUp() }
-
             )
         }
         composable<Route.Detail> { navBackStackEntry ->
@@ -41,7 +40,7 @@ fun MainNavHost(
 
             DetailScreen(
                 padding = padding,
-                index = args.index,
+                id = args.index,
                 navigateToBack = { navController.navigateUp() }
             )
         }
